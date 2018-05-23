@@ -1,0 +1,361 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="page-footer.html">
+<!-- include classes in the main document -->
+
+
+<dom-module id="about-us-page">
+  <template>
+    <style>
+      :host {
+        --app-primary-color: none;
+        --app-secondary-color: black;
+
+        display: block;
+      }
+    
+    #search-bar {
+        position: relative;
+        top: 30%;
+        left: 25%;
+        width: 50%;
+        color: white;
+        --paper-input-container-color: white;
+        --paper-input-container-focus-color: white;
+        --paper-input-container-input-color: white;
+    }
+
+    #meal-form{
+      position: relative;
+      width: 100%;
+    }
+    
+    #inputs {
+        display: flex;
+        flex-direction: row;
+        color: white;
+    }
+
+    .content{
+        display: flex;
+        display: flex;
+        flex-direction: row;
+        margin-left: 100px; 
+        margin-right: 100px;
+        margin-bottom: 30px;
+        text-align: center;
+        position: relative;
+        width: 70%;
+    }
+
+    .form-content{
+      display: flex;
+      flex-direction: horizontal;
+      position: relative;
+    }
+    
+    #search {
+        flex-grow: 1;
+        
+    }
+    paper-button {
+        text-transform: none;
+        color: #878B8F;
+        font-family: "century gothic";
+    }
+    
+    #signin-button {
+        border-radius: 5px;
+        height: 40px;
+        background: #ADEBCF;  
+        color: #878B8F;   
+    }
+    
+    #login-button.hover {
+        background: #3469bc;
+    }
+    
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
+      app-header { 
+        color: #fff;
+        background-color: white;
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      .drawer-list {
+        margin: 0 0px;
+      }
+
+      .drawer-list a {
+        display: block;
+        padding: 0 0px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        line-height: 40px;
+      }
+
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: normal;
+      }
+
+      #newbeginning{
+        width: 70%;
+        left: 15%;
+        position: relative;
+        text-align: justify;
+      }
+      #teams{
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        width: 80%;
+        left: 10%;
+      }
+      .team{
+        display: flex;
+        flex-direction: row;
+      }
+      .member{
+        
+        flex-grow: 1;
+        text-align: center;
+      }
+      .member img{
+        border-radius: 50%;
+        height: 160px;
+        width: 160px;
+
+      }
+      .member h2{
+        color: #6beab1;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      .member p{
+        color: #878B8F;
+        margin-top: 0;
+      }
+    </style>
+
+    <app-location
+        route="{{route}}"
+        url-space-regex="^[[rootPath]]">
+    </app-location>
+
+    <app-route
+        route="{{route}}"
+        pattern="[[rootPath]]:page"
+        data="{{routeData}}"
+        tail="{{subroute}}">
+    </app-route>
+
+    <app-drawer-layout fullbleed narrow="{{narrow}}">
+
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region style='background-color: white;'>
+
+        <app-header slot="header" condenses reveals effects="waterfall">
+          <app-toolbar style="display: flex; flex-direction: row">
+            <div>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="home-page" href="home-page" style="padding: 0;"><img src="../images/feedmelogo-color.png" style="height:40px; margin-top: 10px;""></a>
+          </iron-selector>
+            </div>
+            <div style="flex-grow: 2"></div>
+            <firebase-auth
+                id="auth"
+                app-name="feedme"
+                provider="google"
+                signed-in="{{signedIn}}"
+                user="{{user}}">
+            </firebase-auth>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="meal-search-page" href="meal-search-page" style="padding: 0;"><paper-button id='sign-in' style="color: #424A54; font-weight: normal;" >Search Meals</paper-button></a>
+          </iron-selector>
+            <template is="dom-if" if="{{isLoggedOut}}">
+              <paper-button id='sign-in' on-click='login' style='color: #424A54;'>Login</paper-button>
+            </template>
+            <template is="dom-if" if="{{isLoggedIn}}">
+            <template is='dom-if' if="{{currentUser.isNotHost}}">
+                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                  <a name="login-page" href="login-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;"  >Become a Host</paper-button></a>
+                </iron-selector>
+              </template>
+              <template is='dom-if' if="{{currentUser.isHost}}">
+                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                  <a name="create-meal-page" href="create-meal-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;" >Create a Meal</paper-button></a>
+                </iron-selector>
+              </template>
+              <paper-button raised id='logout' onclick="logout()" on-click='logout' style="color: #424A54;">Logout</paper-button>
+              <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="profile-page" href="profile-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;" on-click='selfUser'>Account</paper-button></a>
+              </iron-selector>
+              </template>
+
+          </app-toolbar>
+        </app-header>
+        <div id="newbeginning">
+          <h2 style="text-align: center; font-weight: normal;">About FeedMe</h2>
+          <div class="newbeginningtext">
+            <p>Cooking meals can be a ton of work- we all know it. The time it takes to drive to the store, find ingredients, check out, drive home, prep the food, and do the cooking is a pretty high price to pay for a home-cooked meal. If only there was a way to enjoy the luxury of home-cooked meals without putting in the work yourself... Or if you're gonna put in the work, you should at least get paid for it, right?<br/><br/> That's what we are here for! If you're hungry (and just lazy enough), FeedMe helps you find home-cooked meals all around your neighborhood. Or if you got carried away with the Public BOGOs and just bought WAY too much food, let us help you share some of it with your friends. <br/><br/>Whether you're an aspiring cook or a hungry couch potato, you're in the right place! Our team is here to make sure you have all the opportunities to feed or get fed. <br/><br/>Cheers!</p>
+          </div>
+        </div>
+      </div>
+      <div id="meettheteam">
+        <h2 style="text-align: center; font-weight: normal;">MEET THE TEAM</h2>
+        <div id='teams'>
+          <div class="team">
+            <div class="member">
+              <img src="../images/evan.jpg">
+              <h2>EVAN</h2> 
+              <p>Scrum Master</p>          
+            </div>
+            <div class="member">
+              <img src="../images/christie.jpg">
+              <h2>CHRISTIE</h2> 
+              <p>Front End Developer</p>
+            </div>
+            <div class="member">
+              <img src="../images/esteban.jpg">
+              <h2>ESTEBAN</h2> 
+              <p>Front End Developer</p>
+            </div>
+          </div>
+          <div class="team">
+            <div class="member">
+              <img src="../images/jeffrey.jpg">
+              <h2>JEFFREY</h2> 
+              <p>Data Architect</p>          
+            </div>
+            <div class="member">
+              <img src="../images/swathi.jpg">
+              <h2>SWATHI</h2> 
+              <p>Front End Developer</p>
+            </div>
+            <div class="member">
+              <img src="../images/andrew.jpg">
+              <h2>ANDREW</h2> 
+              <p>Back End Developer</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+        <page-footer></page-footer>
+      </app-header-layout>
+      
+      
+    </app-drawer-layout>
+    
+  </template>
+
+  <script>
+    class AboutUsPage extends Polymer.Element {
+      static get is() { return 'about-us-page'; }
+      static get properties() {
+        return {
+          currentUser: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
+          },
+          selectedUser: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
+          },
+          isLoggedIn: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            reflectToAttribute: true
+          },
+          isLoggedOut: {
+            type: Boolean,
+            value: true,
+            notify: true,
+            reflectToAttribute: true
+          }
+        };
+      }
+
+      selfUser(){
+        var that = this;
+        var data = firebase.database().ref('users/' + window.user.uid);
+        data.on('value', function(snapshot) {
+          var userinfo = snapshot.val();
+          that.selectedUser = userinfo;
+        });
+      }
+
+      ready(){
+        super.ready();
+        this.isLoggedOut = true;
+        this.isLoggedIn  = false;
+        var that = this;
+        var p = new Promise(function(resolve, reject) {
+          setTimeout(function() { resolve(10); }, 1000);
+        });
+        p.then(function(result) {
+          if (window.user != null) {
+            that.isLoggedIn = true;
+            that.isLoggedOut = false;
+            var data = firebase.database().ref('users/' + window.user.uid);
+            data.on('value', function(snapshot) {
+              var userinfo = snapshot.val();
+              that.currentUser = userinfo;
+              that.selectedUser = userinfo;
+            });
+          }
+        });
+      }
+
+      login(){
+        login();
+        this.isLoggedOut = false;
+        this.isLoggedIn  = true;
+      }
+
+      logout(){
+        logout();
+        this.isLoggedOut = true;
+        this.isLoggedIn  = false;
+      }
+    }
+
+    window.customElements.define(AboutUsPage.is, AboutUsPage);
+  </script>
+</dom-module>

@@ -1,0 +1,463 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="page-footer.html">
+<!-- include classes in the main document -->
+
+
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-dropdown-input/paper-dropdown-input.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="page-footer.html">
+<!-- include classes in the main document -->
+
+
+<dom-module id="create-meal-page">
+  <template>
+    <style>
+      :host {
+        --app-primary-color: none;
+        --app-secondary-color: black;
+
+        display: block;
+      }
+    
+    #search-bar {
+        position: relative;
+        top: 30%;
+        left: 25%;
+        width: 50%;
+        color: white;
+        --paper-input-container-color: white;
+        --paper-input-container-focus-color: white;
+        --paper-input-container-input-color: white;
+    }
+
+    #meal-form{
+      position: relative;
+      width: 100%;
+    }
+    
+    #inputs {
+        display: flex;
+        flex-direction: row;
+        color: white;
+    }
+
+    .content{
+        display: flex;
+        display: flex;
+        flex-direction: row;
+        margin-left: 200px; 
+        margin-right: 200px;
+        text-align: center;
+        position: relative;
+        width: 70%;
+        font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    }
+
+    .form-content{
+      display: flex;
+      flex-direction: horizontal;
+      position: relative;
+      font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    }
+    
+    #search {
+        flex-grow: 1;
+        
+    }
+    paper-button {
+        text-transform: none;
+        color: #878B8F;
+        font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    }
+    
+    #signin-button {
+        border-radius: 5px;
+        height: 40px;
+        background: #ADEBCF;  
+        color: #878B8F;   
+    }
+
+    .col-25 {
+        float: left;
+        width: 25%;
+        margin-top: 6px;
+    }
+
+    .col-75 {
+        float:left;
+        margin-top: 6px;
+        margin-bottom: 2px;
+        --paper-input-container-input: {
+          font-size: 16px;
+        };
+    }
+
+    input[type=text], select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
+
+    .main-content{
+      margin-left: 80px; 
+      margin-right: 80px;
+      margin-top: 20px;
+      padding: 10px;
+      background: #F3F5F7;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      margin-bottom: 10px;
+      font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    }
+
+    label {
+      padding: 12px 12px 12px 0;
+      display: inline-block;
+    }
+
+    input[type=submit] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      float: right;
+      font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    }
+    
+    #login-button.hover {
+        background: #3469bc;
+    }
+    
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
+      app-header { 
+        color: #fff;
+        background-color: white;
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      .drawer-list {
+        margin: 0 0px;
+      }
+
+      .drawer-list a {
+        display: block;
+        padding: 0 0px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        line-height: 40px;
+      }
+
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: normal;
+      }
+
+      .input{
+        flex-grow: 1;
+        text-align: left;
+      }
+    </style>
+
+    <app-location
+        route="{{route}}"
+        url-space-regex="^[[rootPath]]">
+    </app-location>
+
+    <app-route
+        route="{{route}}"
+        pattern="[[rootPath]]:page"
+        data="{{routeData}}"
+        tail="{{subroute}}">
+    </app-route>
+
+    <app-drawer-layout fullbleed narrow="{{narrow}}">
+
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region style='background: linear-gradient(
+          rgba(0, 0, 0, 0.2),
+          rgba(0, 0, 0, 0.2)
+          ), url("../images/backgrond.png") no-repeat center center fixed; background-size: cover;'>
+
+        <app-header slot="header" condenses reveals effects="waterfall">
+          <app-toolbar style="display: flex; flex-direction: row">
+            <div>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="home-page" href="home-page" style="padding: 0;"><img src="../images/feedmelogo-color.png" style="height:40px; margin-top: 10px;""></a>
+          </iron-selector>
+            </div>
+            <div style="flex-grow: 2"></div>
+            <firebase-auth
+                id="auth"
+                app-name="feedme"
+                provider="google"
+                signed-in="{{signedIn}}"
+                user="{{user}}">
+            </firebase-auth>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="meal-search-page" href="meal-search-page" style="padding: 0;"><paper-button id='sign-in' style="color: #424A54; font-weight: normal;" >Search Meals</paper-button></a>
+          </iron-selector>
+            <template is="dom-if" if="{{isLoggedOut}}">
+              <paper-button id='sign-in' on-click='login' style='color: #424A54;'>Login</paper-button>
+            </template>
+            <template is="dom-if" if="{{isLoggedIn}}">
+            <template is='dom-if' if="{{currentUser.isNotHost}}">
+                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                  <a name="login-page" href="login-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;"  >Become a Host</paper-button></a>
+                </iron-selector>
+              </template>
+              <template is='dom-if' if="{{currentUser.isHost}}">
+                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                  <a name="create-meal-page" href="create-meal-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;" >Create a Meal</paper-button></a>
+                </iron-selector>
+              </template>
+              <paper-button raised id='logout' onclick="logout()" on-click='logout' style="color: #424A54;">Logout</paper-button>
+              <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="profile-page" href="profile-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;" on-click='selfUser'>Account</paper-button></a>
+              </iron-selector>
+              </template>
+
+          </app-toolbar>
+        </app-header>
+
+        <div class="main-content">
+          <div style="margin-left: 100px; margin-right: 100px; margin-bottom: 10px">
+            <h1 style="text-align: center; border-bottom: 1px solid black; font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif">Create a Meal</h1>
+          </div>
+        
+
+          <div class="content">
+            <form method="get" action="/form/handler" id="meal-form">
+              <div class="form-content">
+                <label for="fname" class="col-25">Name of Meal</label>
+                <paper-input value='{{fname}}' type="text" id="fname" name="firstname" placeholder="Your meal name.." class="col-75" style='flex-grow: 1; text-align: left;'></paper-input>
+              </div>
+              <div class="form-content">
+                <label for="date" class="col-25">Date of Meal</label>
+                <paper-input value='{{date}}' type="text" id="date" name="date" placeholder="01/01/2018" class="col-75" style='flex-grow: 1; text-align: left;'></paper-input>
+              </div>
+              <div class="form-content">
+                <label for="guests" class="col-25">Meal Type</label>
+                <paper-dropdown-input no-search style='flex-grow: 1; text-align: left;' selected-item-label="{{selectedItem}}"
+                          items='["Breakfast","Lunch","Dinner"]'>
+                </paper-dropdown-input>
+              </div>
+              <div class="form-content">
+                <label for="time" class="col-25">Time of Meal</label>
+                <paper-input value='{{time}}' type="text" id="time" name="time" placeholder="10:00 AM" class="col-75" style='flex-grow: 1; text-align: left;'></paper-input>
+              </div>
+              <div class="form-content">
+                <label for="guests" class="col-25">Number of Guests</label>
+                <paper-input value='{{guest}}' type="text" id="guest" name="guest" placeholder="10" class="col-75" style='flex-grow: 1; text-align: left;'> </paper-input>
+              </div>
+              <div class="form-content">
+                <label for="guests" class="col-25">Price of Meal</label>
+                <paper-input value='{{price}}' type="text" id="price" name="price" placeholder="20.00" class="col-75" style='flex-grow: 1; text-align: left;'></paper-input>
+              </div>
+              <div class="form-content">
+                <label for="guests" class="col-25">Photo URL</label>
+                <paper-input value='{{photo}}' type="text" id="photo" name="photo" placeholder="Image URL (200x200)..." class="col-75" style='flex-grow: 1; text-align: left;'></paper-input>
+              </div>
+              <div class="form-content">
+                <label for="description" class="col-25">Description</label>
+                <paper-textarea value='{{description}}' id="description" name="description" placeholder="Write something to describe your meal.."  class="col-75" style='flex-grow: 1; text-align: left;'></paper-textarea>
+              </div>
+              <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="home-page" href="home-page" style="padding: 0;"><paper-button raised id='signin-button' style="margin-top: 20px; margin-left: 90px; margin-bottom: 10px; text-align:center; width: 30%; font-weight: normal;" on-click='createMeal'>Create Meal</paper-button></a>
+              </iron-selector>
+              
+            </form>
+          </div>
+        </div>
+    
+        <page-footer></page-footer>
+      </app-header-layout>
+    </app-drawer-layout>
+    
+  </template>
+
+  <script>
+    class CreateMealPage extends Polymer.Element {
+      static get is() { return 'create-meal-page'; }
+      static get properties() {
+        return {
+          currentUser: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
+          },
+          selectedUser: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
+          },
+          isLoggedIn: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            reflectToAttribute: true
+          },
+          isLoggedOut: {
+            type: Boolean,
+            value: true,
+            notify: true,
+            reflectToAttribute: true
+          }
+        };
+      }
+
+      createMeal(){
+        var name = this.fname;
+        var date = this.date;
+        var type = this.selectedItem;
+        var time = this.time;
+        var numG = this.guest;
+        var slotsleft = this.guest;
+        var price = this.price;
+        var des = this.description;
+        var img = this.photo;
+        var hostid = window.user.uid;
+        var user = firebase.database().ref('users/' + hostid);
+        var hostname;
+        var hostphoto;
+        var hostdes;
+        var hostrating;
+        user.on('value', function(snapshot) {
+          var userinfo = snapshot.val();
+          debugger;
+          console.log(name);
+          hostname = userinfo.name
+          hostdes = userinfo.description;
+          hostphoto = userinfo.photo;
+          hostrating = userinfo.rating;
+          writeToDatabase(name,date,type,time,numG,slotsleft,price,des,img,hostid,hostname,hostdes,hostphoto,hostrating);
+          alert('Meal has been created!');
+        });
+      }
+
+      ready(){
+        super.ready();
+        this.isLoggedOut = true;
+        this.isLoggedIn  = false;
+        var that = this;
+        var p = new Promise(function(resolve, reject) {
+          setTimeout(function() { resolve(10); }, 1000);
+        });
+        p.then(function(result) {
+          if (window.user != null) {
+            that.isLoggedIn = true;
+            that.isLoggedOut = false;
+            var data = firebase.database().ref('users/' + window.user.uid);
+            data.on('value', function(snapshot) {
+              var userinfo = snapshot.val();
+              that.currentUser = userinfo;
+              that.selectedUser = userinfo;
+            });
+          }
+        });
+      }
+
+      selfUser(){
+        var that = this;
+        var data = firebase.database().ref('users/' + window.user.uid);
+        data.on('value', function(snapshot) {
+          var userinfo = snapshot.val();
+          that.selectedUser = userinfo;
+        });
+      }
+
+      login(){
+        login();
+        this.isLoggedOut = false;
+        this.isLoggedIn  = true;
+      }
+
+      logout(){
+        logout();
+        this.isLoggedOut = true;
+        this.isLoggedIn  = false;
+      }
+    }
+
+    window.customElements.define(CreateMealPage.is, CreateMealPage);
+
+    function writeToDatabase(name,date,type,time,numG,slotsleft,price,des,img,hostid,hostname,hostdes,hostphoto,hostrating){
+      var messageListRef = firebase.database().ref('meals');
+      var newMessageRef = messageListRef.push();
+      newMessageRef.set({
+        'date': date,
+        'description': des,
+        'guests': numG,
+        'guestsleft': slotsleft,
+        'host': hostname,
+        'image': img,
+        'mealtype': type,
+        'name': name,
+        'price': price,
+        'rating': hostrating,
+        'time': time,
+        'hostid': hostid,
+        'hostdes': hostdes,
+        'hostphoto': hostphoto
+      });
+    }
+  </script>
+
+</dom-module>

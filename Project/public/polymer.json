@@ -1,0 +1,43 @@
+{
+  "entrypoint": "index.html","src/meal-search-page.html"
+  "shell": "src/my-app.html",
+  "fragments": [
+    "src/about-us-page.html",
+    "src/create-meal-page.html",
+    "src/faq-page.html",
+    "src/home-page.html",
+    "src/login-page.html",
+    "src/meal-page.html",
+    "src/meal-search-page.html",
+    "src/my-icons.html",
+    "src/my-view2.html",
+    "src/my-view3.html",
+    "src/my-view404.html",
+    "src/page-footer.html",
+    "src/profile-page.html",
+    "src/shared-styles.html",
+    "src/signup-page.html"
+  ],
+  "sources": [
+    "src/**",
+    "images/**/*"
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/*.js"
+  ],
+  "lint": {
+    "rules": ["polymer-2"]
+  },
+  "builds": [
+    {
+      "preset": "es5-bundled"
+    },
+    {
+      "preset": "es6-bundled"
+    },
+    {
+      "preset": "es6-unbundled"
+    }
+  ]
+}

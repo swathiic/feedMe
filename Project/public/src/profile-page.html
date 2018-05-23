@@ -1,0 +1,331 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/s-rating/s-rating.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="page-footer.html">
+
+<dom-module id="profile-page">
+  <template>
+    <style>
+      :host {
+        --app-primary-color: white;
+        --app-secondary-color: black;
+
+        display: block;
+      }
+    
+    #search-bar {
+        position: relative;
+        top: 30%;
+        left: 25%;
+        width: 50%;
+        color: white;
+        --paper-input-container-color: white;
+        --paper-input-container-focus-color: white;
+        --paper-input-container-input-color: white;
+    }
+    
+    #inputs {
+        display: flex;
+        flex-direction: row;
+        color: white;
+    }
+    
+    #search {
+        flex-grow: 1;
+        
+    }
+    paper-button {
+        text-transform: none;
+    }
+    
+    #signin-button {
+        border-radius: 5px;
+        height: 40px;
+        background: #ADEBCF;  
+        color: #878B8F;
+    }
+    
+    #login-button.hover {
+        background: #3469bc;
+    }
+    
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
+      app-header {
+        color: #fff;
+        background-color: var(--app-primary-color);
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      .drawer-list {
+        margin: 0 0px;
+      }
+
+      .drawer-list a {
+        display: block;
+        padding: 0 0px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        line-height: 40px;
+      }
+
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: normal;
+      }
+
+      #profile-list {
+      padding: 10px;
+      padding-bottom: 30px;
+      position: relative;
+      left: 19%;
+      width: 60%;
+      background-color: #EBEEF1;
+      border-radius: 5px;
+      margin: 40px 0;
+    }
+
+    .profile {
+      /*background: rgb(150,150,150);*/
+      padding: 10px 10px;
+      background-color: #FFFFFF;
+      border-top: 1px solid #D4DADF;
+      border-right: 1px solid #D4DADF;
+      border-left: 1px solid #D4DADF;
+      margin: 0 20px;
+      padding-left: 30px;
+    }
+
+    .profile h2{
+      color: #ADEBCF;
+      font-weight: normal;
+    }
+
+    #profile1{
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
+    }
+
+    #profile3{
+      border-bottom-right-radius: 5px;
+      border-bottom-left-radius: 5px;
+      border-bottom: 1px solid #D4DADF;
+    }
+
+    </style>
+
+    <app-location
+        route="{{route}}"
+        url-space-regex="^[[rootPath]]">
+    </app-location>
+
+    <app-route
+        route="{{route}}"
+        pattern="[[rootPath]]:page"
+        data="{{routeData}}"
+        tail="{{subroute}}">
+    </app-route>
+
+    <app-drawer-layout fullbleed narrow="{{narrow}}">
+
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region style='background-color: white'>
+
+        <app-header slot="header" fixed condenses effects="waterfall">
+          <app-toolbar style="display: flex; flex-direction: row">
+            <div>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="home-page" href="home-page" style="padding: 0;"><img src="../images/feedmelogo-color.png" style="height:40px; margin-top: 10px;""></a>
+          </iron-selector>
+            </div>
+            <div style="flex-grow: 2"></div>
+            <firebase-auth
+                id="auth"
+                app-name="feedme"
+                provider="google"
+                signed-in="{{signedIn}}"
+                user="{{user}}">
+            </firebase-auth>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="meal-search-page" href="meal-search-page" style="padding: 0;"><paper-button id='sign-in' style="color: #424A54; font-weight: normal;" >Search Meals</paper-button></a>
+          </iron-selector>
+            <template is="dom-if" if="{{isLoggedOut}}">
+              <paper-button id='sign-in' on-click='login' style='color: #424A54;'>Login</paper-button>
+            </template>
+            <template is="dom-if" if="{{isLoggedIn}}">
+              <template is='dom-if' if="{{currentUser.isNotHost}}">
+                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                  <a name="login-page" href="login-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;"  >Become a Host</paper-button></a>
+                </iron-selector>
+              </template>
+              <template is='dom-if' if="{{currentUser.isHost}}">
+                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                  <a name="create-meal-page" href="create-meal-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;" >Create a Meal</paper-button></a>
+                </iron-selector>
+              </template>
+              <paper-button raised id='logout' onclick="logout()" on-click='logout' style="color: #424A54;">Logout</paper-button>
+              <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="profile-page" href="profile-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;" on-click='selfUser'>Account</paper-button></a>
+              </iron-selector>
+              </template>
+
+          </app-toolbar>
+          <app-toolbar style='display: flex; flex-direction: row;'>
+          <div style="flex-grow: 2"></div>
+            <img src="{{selectedUser.photo}}" style = "height: 60px;">
+            <h1 style="background-color: white; color: black;">{{selectedUser.name}}</h1>
+            <div style="flex-grow: 2"></div>
+          </app-toolbar>
+        </app-header>
+
+        <div class="meal-info">
+            <div style="margin-left: 20px; margin-right: 20px; margin-bottom: -15px">
+              <h2 style="text-align: left; font-family: 'century gothic'; border-bottom: 1px solid black;">A Little About {{selectedUser.name}}</h2>
+            </div>
+
+            <s-rating value='{{selectedUser.rating}}' disabled style="margin-left: 20px;"></s-rating>
+
+            <div class="content" style=" margin-left: 20px; margin-bottom: 20px;">
+               <p style="size: 15px;">{{selectedUser.description}}</p>
+            </div>
+              
+             <!--  <div id="about-content" style="margin-left: 20px;">
+                <h2 style="text-align: center;">Favorite Cusines</h2>
+                <p style="size: 16px;">Lorem ipsum dolor sit amet, natum clita delicatissimi usu ne, an vim aeque disputationi, pri no reque elitr accumsan. Eos in dolore antiopam, ad has putant tacimates invenire. Eu duo quod rationibus. Has no impetus posidonium, saperet ornatus fuisset vel ad. Mutat vidisse integre ea mea, ex vel decore animal aliquando. Mei veniam deserunt repudiandae ea.</p>
+              
+            </div> -->
+
+            <!-- <div class="content" style="margin-top: 15px; margin-left: 20px;">
+              <div id="about-content" style="margin-right: 20px;">
+                <h2 style="text-align: center;">Specialies</h2>
+                <p style="size: 16px;">Lorem ipsum dolor sit amet, natum clita delicatissimi usu ne, an vim aeque disputationi, pri no reque elitr accumsan. Eos in dolore antiopam, ad has putant tacimates invenire. Eu duo quod rationibus. Has no impetus posidonium, saperet ornatus fuisset vel ad. Mutat vidisse integre ea mea, ex vel decore animal aliquando. Mei veniam deserunt repudiandae ea. Pri soleat recusabo laboramus ne, tractatos deseruisse mea in, bonorum meliore eu eum. Velit dicit volumus ius ne. Ad maiestatis concludaturque nam, per ne ipsum dicant. Eam in docendi voluptatum constituam. Eam adipisci urbanitas cu.</p>
+              </div>   
+            </div> -->
+        </div>
+      
+      <!-- <div id='review-list'>
+          <h1 style="margin: 20px;">Reviews</h1>
+          <dom-repeat items="{{reviews}}">
+            <template>
+              <div class='profile' id="profile{{item.num}}">
+                <h2>{{item.person}}</h2>
+                <h4 style='font-weight: normal;'>{{item.review}}</h4>
+                <s-rating value='4' disabled style="position: relative; bottom: 0; left: 70%""></s-rating>
+              </div>
+            </template>
+          </dom-repeat>
+        </div> -->
+      <page-footer></page-footer>
+      </app-header-layout>
+      
+    </app-drawer-layout>
+    
+  </template>
+
+  <script>
+    class ProfilePage extends Polymer.Element {
+      static get is() { return 'profile-page'; }
+      static get properties() {
+        return {
+          currentUser: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
+          },
+          selectedUser: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
+          },
+          isLoggedIn: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            reflectToAttribute: true
+          },
+          isLoggedOut: {
+            type: Boolean,
+            value: true,
+            notify: true,
+            reflectToAttribute: true
+          }
+        };
+      }
+
+      ready(){
+        super.ready();
+        this.isLoggedOut = true;
+        this.isLoggedIn  = false;
+        var that = this;
+        var p = new Promise(function(resolve, reject) {
+          setTimeout(function() { resolve(10); }, 1000);
+        });
+        p.then(function(result) {
+          if (window.user != null) {
+            that.isLoggedIn = true;
+            that.isLoggedOut = false;
+            var data = firebase.database().ref('users/' + window.user.uid);
+            data.on('value', function(snapshot) {
+              var userinfo = snapshot.val();
+              that.currentUser = userinfo;
+              that.selectedUser = userinfo;
+            });
+          }
+        });
+      }
+
+      selfUser(){
+        var that = this;
+        var data = firebase.database().ref('users/' + window.user.uid);
+        data.on('value', function(snapshot) {
+          var userinfo = snapshot.val();
+          that.selectedUser = userinfo;
+        });
+      }
+
+      login(){
+        login();
+        this.isLoggedOut = false;
+        this.isLoggedIn  = true;
+      }
+
+      logout(){
+        logout();
+        this.isLoggedOut = true;
+        this.isLoggedIn  = false;
+      }
+    }
+
+    window.customElements.define(ProfilePage.is, ProfilePage);
+  </script>
+</dom-module>

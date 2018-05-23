@@ -1,0 +1,165 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="my-icons.html">
+
+<dom-module id="page-footer">
+  <template>  
+  <style>
+    .drawer-list {
+        /*margin: 0 20px;*/
+        display: flex;
+        flex-direction: row;
+      }
+
+      .drawer-list a {
+        display: block;
+        /*padding: 0 16px;*/
+        text-decoration: none;
+        color:  #D3D3D4;
+        line-height: 40px;
+      }
+      .background {
+        background-color: #22232A;
+        color: #D3D3D4;
+      }
+      .container {
+        width: 60%;
+        min-width: 600px;
+        margin-right: auto;
+        margin-left: auto;
+        /*padding-left: 16px;*/
+        /*padding-right: 16px;*/
+        display: flex;
+        flex-direction: row;
+      }
+
+      .needhelp {
+        margin-left: 50px;
+        min-width: 275px;
+        flex-grow: 1;
+      }
+      .links {
+        display: flex;
+        flex-direction: column;
+        min-width: 275px;
+        flex-grow: 1;
+      }
+
+      .info ul{
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .info ul a{
+        text-decoration: none;
+        color: #8E8E92;
+      }
+      .info ul a:hover{
+        font-weight: bold;
+      }
+      .bottomfooter{
+        width: 90%;
+        min-width: 600px;
+        margin-right: auto;
+        margin-left: auto;
+        padding-top: 10px;
+        padding-bottom: 20px;
+        border-top: 1px solid #D3D3D4;
+        display: flex;
+      }
+      #bottomlogo {
+        filter: brightness(80%);
+      }
+      .logos{
+        filter: invert(100%);
+        height: 40px;
+        margin-right: 15px;
+      }
+      .logos { transition: all .2s ease-in-out; }
+      .logos:hover { transform: scale(1.1); }
+
+  </style>
+    <div class="background">
+      <div class="container">
+        <div style="flex-grow: 2;">
+        </div>
+        <div class="links">
+          <h2>Links</h1>
+          <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+            <div id="col1">
+              <a name="home-page" href="home-page">Home Page</a>
+              <a name="signup-page" href="signup-page">Contact Us</a>
+              <a name="about-us-page" href="about-us-page">About Us</a>
+            </div>
+            <div id="col2" style="margin-left: 10px;">
+              <a name="meal-search-page" href="/meal-search-page">Search for Meals</a>
+              <a name="faq-page" href="faq-page">FAQ Page</a>
+            </div>
+          </iron-selector>
+        </div>
+        <div class="needhelp">
+          <h2>Need help?</h1>
+          <div class="info">
+            <ul>
+              <li>We’re here on Mon-Fri 9AM-5PM</li>
+              <li>EST and Sat 9AM-1PM EST</li>
+              <li>Call us: +1 123-456-7890</li>
+              <li>Email: <a href="mailto:support@feedme.com" data-reactid="924">support@feedme.com</a></li>
+            </ul>
+          </div>
+          <div class="socialmedia">
+            <img class="logos" src="../images/facebooklogo.png" >
+            <img class="logos" src="../images/twitterlogo.png" >
+            <img class="logos" src="../images/instalogo.png" >
+          </div>
+        </div>
+        <div style="flex-grow: 2;">
+        </div>
+      </div>
+      <div class="bottomfooter">
+        <img id="bottomlogo" src="../images/feedmelogo-white.png" style="height:20px; margin-top: 5px">
+        <div style="margin-left: 7px; margin-top: 3px;">Copyright 2018</div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    class PageFooter extends Polymer.Element {
+      static get is() { return 'page-footer'; }
+    }
+
+    window.customElements.define(PageFooter.is, PageFooter);
+  </script>
+
+  <script>
+      function login(){
+     // e.preventDefault();
+     // e.stopPropagation();
+      var provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('profile');
+      provider.addScope('email');
+      provider.addScope('https://www.googleapis.com/auth/plus.me');
+      firebase.auth().signInWithPopup(provider); // Opens a popup window and returns a promise to handle errors.
+      var auth = firebase.auth();
+      var currentUser = auth.currentUser;
+      //firebase.auth().currentUser;
+    };
+    function logout(){
+      firebase.auth().signOut();
+    };
+  </script>
+</dom-module>

@@ -1,0 +1,326 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="page-footer.html">
+
+<dom-module id="faq-page">
+  <template>
+    <style>
+      :host {
+        --app-primary-color: #ADEBCF;
+        --app-secondary-color: black;
+
+        display: block;
+      }
+    
+    #search-bar {
+        position: relative;
+        /*top: 30%;*/
+        left: 25%;
+        width: 50%;
+        color: white;
+        --paper-input-container-color: white;
+        --paper-input-container-focus-color: white;
+        --paper-input-container-input-color: white;
+    }
+    
+    #inputs {
+        display: flex;
+        flex-direction: row;
+        color: white;
+    }
+    
+    #search {
+        flex-grow: 1;
+        
+    }
+    paper-button {
+        text-transform: none;
+    }
+    
+    #signin-button {
+        border-radius: 5px;
+        height: 40px;
+        background: #ADEBCF;  
+        color: #878B8F;
+    }
+    
+    #login-button.hover {
+        background: #3469bc;
+    }
+
+    #faqs-list {
+      padding: 10px;
+      padding-bottom: 30px;
+      position: relative;
+      left: 19%;
+      width: 60%;
+      background-color: #EBEEF1;
+      border-radius: 5px;
+      margin: 40px 0;
+    }
+
+    .faq {
+      /*background: rgb(150,150,150);*/
+      padding: 10px 10px;
+      background-color: #FFFFFF;
+      border-top: 1px solid #D4DADF;
+      border-right: 1px solid #D4DADF;
+      border-left: 1px solid #D4DADF;
+      margin: 0 20px;
+      padding-left: 30px;
+    }
+
+    .faq h2{
+      color: #ADEBCF;
+      font-weight: normal;
+    }
+
+    #faq1{
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
+    }
+
+    #faq3{
+      border-bottom-right-radius: 5px;
+      border-bottom-left-radius: 5px;
+      border-bottom: 1px solid #D4DADF;
+    }
+    
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
+      app-header {
+        color: #fff;
+        background-color: var(--app-primary-color);
+        display: flex;
+        flex-direction: column;
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      .drawer-list {
+        margin: 0 0px;
+      }
+
+      .drawer-list a {
+        display: block;
+        padding: 0 0px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        line-height: 40px;
+      }
+
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: normal;
+      }
+      input {
+        font-size: 16px;
+      }
+
+      #search{
+        --paper-input-container-input: {
+          font-size: 16px;
+        };
+      }
+    </style>
+
+    <app-location
+        route="{{route}}"
+        url-space-regex="^[[rootPath]]">
+    </app-location>
+
+    <app-route
+        route="{{route}}"
+        pattern="[[rootPath]]:page"
+        data="{{routeData}}"
+        tail="{{subroute}}">
+    </app-route>
+
+    <app-drawer-layout fullbleed narrow="{{narrow}}">
+
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region style='background-color: #F3F5F7;'>
+
+        <app-header slot="header" condenses reveals effects="waterfall">
+          <app-toolbar style="display: flex; flex-direction: row">
+            <div>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="home-page" href="home-page" style="padding: 0;"><img src="../images/feedmelogo-white.png" style="height:40px; margin-top: 10px;""></a>
+          </iron-selector>
+            </div>
+            <div style="flex-grow: 2"></div>
+            <firebase-auth
+                id="auth"
+                app-name="feedme"
+                provider="google"
+                signed-in="{{signedIn}}"
+                user="{{user}}">
+            </firebase-auth>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="meal-search-page" href="meal-search-page" style="padding: 0;"><paper-button id='sign-in' style="color: white; font-weight: normal;" >Search Meals</paper-button></a>
+          </iron-selector>
+            <template is="dom-if" if="{{isLoggedOut}}">
+              <paper-button id='sign-in' on-click='login' style='color: white;'>Login</paper-button>
+            </template>
+            <template is="dom-if" if="{{isLoggedIn}}">
+            <template is='dom-if' if="{{currentUser.isNotHost}}">
+                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                  <a name="login-page" href="login-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;"  >Become a Host</paper-button></a>
+                </iron-selector>
+              </template>
+              <template is='dom-if' if="{{currentUser.isHost}}">
+                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                  <a name="create-meal-page" href="create-meal-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;" >Create a Meal</paper-button></a>
+                </iron-selector>
+              </template>
+              <paper-button raised id='logout' onclick="logout()" on-click='logout' style="color: white;">Logout</paper-button>
+              <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="profile-page" href="profile-page" style="padding: 0;"><paper-button raised id='logout' style="color: white; font-weight: normal;" on-click='selfUser'>Account</paper-button></a>
+              </iron-selector>
+              </template>
+
+          </app-toolbar>
+          <!-- <app-toolbar style="margin-bottom: 20px;">
+            <div id='search-bar'>
+              <div id='inputs'>
+                  <paper-input label='Search' id='search' style="font-size: 16px;"></paper-input>
+              </div>
+            </div>
+          </app-toolbar> -->
+        </app-header>
+        
+        <div id='faqs-list'>
+          <h1 style="margin: 20px;">FAQs</h1>
+          <dom-repeat items="{{faqs}}">
+            <template>
+              <div class='faq' id="faq{{item.num}}">
+                <h2>{{item.question}}</h2>
+                <h4 style='font-weight: normal;'>{{item.answer}}</h4>
+              </div>
+            </template>
+          </dom-repeat>
+        </div>
+        <page-footer></page-footer>
+      </app-header-layout>
+    </app-drawer-layout>
+    
+  </template>
+
+  <script>
+    class FaqPage extends Polymer.Element {
+      static get is() { return 'faq-page'; }
+      static get properties() {
+        return {
+          currentUser: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
+          },
+          selectedUser: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
+          },
+          isLoggedIn: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            reflectToAttribute: true
+          },
+          isLoggedOut: {
+            type: Boolean,
+            value: true,
+            notify: true,
+            reflectToAttribute: true
+          },
+          faqs: {
+            value() {
+              return [
+                {question: 'What is FeedMe?', answer: 'Think of FeedMe as the Uber of meals. FeedMe a Web Application that allows hosts to share meals with hungry guests. Hosts can post meals in advance and invite friends and neighbors to the meal. Hungry guests can then book these delicious meals and get a home-cooked meal without having to do any of the hard work!', num: 1},
+                {question: 'How do I become a FeedMe host?', answer: 'Its easy! Just click the Become a Host button on your homepage and we will walk you through it.', num: 2},
+                {question: 'Is FeedMe free?', answer: 'It is free to post and search for meals on FeedMe. However, hosts will usually charge a fee for meals they offer. Payments are made directly to the host at the door (not on the FeedMe site).', num: 2},
+                {question: 'How do I create an account?', answer: 'It doesnt matter if this is your first time with us or you are a regular - just click the Log In button and enter your Google account credentials. That will log you in, even if this is your first time on our site.', num: 2},
+                {question: 'How do I post a meal?', answer: 'Navigate to our Create a Meal page and we will walk you through. You will need to set the name, date, type, time, capacity, price and description of your meal.', num: 3},
+                  {question: 'How do I book a meal?', answer: 'Navigate to our Meal Search page and we will help find the perfect meal for you. Use the search fields to narrow down your search to only include foods that you will love.', num: 3},
+              ];
+            }
+          }
+        };
+      }
+
+      ready(){
+        super.ready();
+        this.isLoggedOut = true;
+        this.isLoggedIn  = false;
+        var that = this;
+        var p = new Promise(function(resolve, reject) {
+          setTimeout(function() { resolve(10); }, 1000);
+        });
+        p.then(function(result) {
+          if (window.user != null) {
+            that.isLoggedIn = true;
+            that.isLoggedOut = false;
+            var data = firebase.database().ref('users/' + window.user.uid);
+            data.on('value', function(snapshot) {
+              var userinfo = snapshot.val();
+              that.currentUser = userinfo;
+              that.selectedUser = userinfo;
+            });
+          }
+        });
+      }
+      selfUser(){
+        var that = this;
+        var data = firebase.database().ref('users/' + window.user.uid);
+        data.on('value', function(snapshot) {
+          var userinfo = snapshot.val();
+          that.selectedUser = userinfo;
+        });
+      }
+
+      login(){
+        login();
+        this.isLoggedOut = false;
+        this.isLoggedIn  = true;
+      }
+
+      logout(){
+        logout();
+        this.isLoggedOut = true;
+        this.isLoggedIn  = false;
+      }
+    }
+
+    window.customElements.define(FaqPage.is, FaqPage);
+
+  </script>
+</dom-module>

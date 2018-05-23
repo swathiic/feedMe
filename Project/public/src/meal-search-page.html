@@ -1,0 +1,467 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="shared-styles.html">
+<!-- <link rel="import" href="../bower_components/polymer/polymer-element.html"> -->
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/s-rating/s-rating.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-dropdown-input/paper-dropdown-input.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+
+<script src="https://apis.google.com/js/platform.js" async defer> </script>
+<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+<link rel="import" href="my-icons.html">
+<link rel="import" href="page-footer.html">
+
+<dom-module id="meal-search-page">
+  <template>
+    <style>
+      :host {
+        --app-primary-color: white;
+        --app-secondary-color: black;
+
+        display: block;
+      }
+    
+    #search-bar {
+        position: relative;
+        left: 25%;
+        width: 50%;
+        color: white;
+        background-color: white;
+        border-radius: 5px;
+        padding-left: 10px;
+        --paper-input-container-color: black;
+        --paper-input-container-focus-color: black;
+        --paper-input-container-input-color: black;
+    }
+    
+    #inputs {
+        display: flex;
+        flex-direction: row;
+        color: white;
+        --paper-input-container-input: {
+          font-size: 16px;
+        };
+    }
+    
+    #search {
+        flex-grow: 1;
+        
+    }
+
+    #searchbutton{
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    paper-button {
+        text-transform: none;
+    }
+    
+    .signin-button {
+      color: #878B8F;
+        background: #ADEBCF;  
+        height: 50px;
+        border-radius: 5px;
+        margin-right: 0;
+    }
+    #searchbutton{
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    #login-button.hover {
+        background: #3469bc;
+    }
+
+    .result {
+      display: flex;
+      flex-direction: row;
+      margin: 20px;
+      border-radius: 5px;
+      background-color: white;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      
+      max-height: 200px;
+    }
+
+    .result:hover {
+      cursor: pointer;
+    }
+    .result-right {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      width: 100%;
+      margin: 10px;
+    }
+
+    #search-results{
+      position: relative;
+      left: 10%;
+      width: 80%;
+      overflow-y: scroll;
+      height: 100%;
+    }
+    
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
+      app-header {
+        color: #fff;
+        background-color: var(--app-primary-color);
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      .drawer-list {
+        margin: 0 0px;
+      }
+
+      .drawer-list a {
+        display: block;
+        padding: 0 0px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        /*line-height: 40px;*/
+      }
+
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: normal;
+      }
+
+      #mealprice{
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        margin: 0 5px 5px 0;
+        border-radius: 5px;
+        padding: 3px;
+        background-color: white;
+      }
+      .hostandtype{
+        color: #6beab1;
+      }
+    </style>
+
+    <app-location
+        route="{{route}}"
+        url-space-regex="^[[rootPath]]">
+    </app-location>
+
+    <app-route
+        route="{{route}}"
+        pattern="[[rootPath]]:page"
+        data="{{routeData}}"
+        tail="{{subroute}}">
+    </app-route>
+
+    <app-drawer-layout fullbleed narrow="{{narrow}}">
+
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region style='background-color: #F6F6F6;'>
+
+        <app-header slot="header" condenses reveals effects="waterfall">
+          <app-toolbar style="display: flex; flex-direction: row">
+            <div>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="home-page" href="home-page" style="padding: 0;"><img src="../images/feedmelogo-color.png" style="height:40px; margin-top: 10px;""></a>
+          </iron-selector>
+            </div>
+            <div style="flex-grow: 2"></div>
+            <firebase-auth
+                id="auth"
+                app-name="feedme"
+                provider="google"
+                signed-in="{{signedIn}}"
+                user="{{user}}">
+            </firebase-auth>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="meal-search-page" href="meal-search-page" style="padding: 0;"><paper-button id='sign-in' style="color: #424A54; font-weight: normal;" >Search Meals</paper-button></a>
+          </iron-selector>
+            <template is="dom-if" if="{{isLoggedOut}}">
+              <paper-button id='sign-in' on-click='login' style='color: #424A54;'>Login</paper-button>
+            </template>
+            <template is="dom-if" if="{{isLoggedIn}}">
+            <template is='dom-if' if="{{currentUser.isNotHost}}">
+                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                  <a name="login-page" href="login-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;"  >Become a Host</paper-button></a>
+                </iron-selector>
+              </template>
+              <template is='dom-if' if="{{currentUser.isHost}}">
+                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                  <a name="create-meal-page" href="create-meal-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;" >Create a Meal</paper-button></a>
+                </iron-selector>
+              </template>
+              <paper-button raised id='logout' onclick="logout()" on-click='logout' style="color: #424A54;">Logout</paper-button>
+              <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="profile-page" href="profile-page" style="padding: 0;"><paper-button raised id='logout' style="color: #424A54; font-weight: normal;" on-click='selfUser'>Account</paper-button></a>
+              </iron-selector>
+              </template>
+
+          </app-toolbar>
+          <app-toolbar style="padding-bottom: 20px; background: url('../images/image-1.jpg') no-repeat center; background-size: cover; height: 200px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <div id='search-bar'>
+              <div id='inputs'>
+                <paper-dropdown-input no-search placeholder='Meal Type' no-label-float='true' style='flex-grow: 1; text-align: left;' selected-item-label="{{mealtypesearch}}"
+                          items='["Breakfast","Lunch","Dinner"]'>
+                </paper-dropdown-input>
+                <paper-input no-label-float label='ex. 01/01/2018' id="search" value="{{datesearch}}"></paper-input>
+                <paper-button raised class='signin-button' id='searchbutton' on-click="searchMeals">Search</paper-button>
+              </div>
+            </div>
+          </app-toolbar>
+        </app-header>
+
+        <div style="display: flex; flex-direction: row; height: 90vh">
+        <div id='search-results'>
+          
+          <dom-repeat items="{{data}}">
+            <template>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="meal-page" href="meal-page" style="padding: 0; ">
+              
+              <div class='result' on-click="test" id="{{index}}">
+                <!-- <img src="{{item.img}}" style="width: 200px; height: 200px; margin-right: 10px;"> -->
+                <div style="min-width: 200px;position: relative; width: 200px; height: 200px; background: url('{{item.image}}'); border-bottom-left-radius: 5px; border-top-left-radius: 5px;">
+                <!-- <img src="../images/unpressed-star.png" style="height: 20px; width: 20px; margin: 5px;"> -->
+                  <div id="mealprice">
+                    {{item.price}}
+                  </div>
+                </div>
+                <div class='result-right'>
+                  <h2 style="font-weight: normal; color: #6beab1; margin-bottom: 0;">{{item.name}}</h2>
+                  <p style="position: absolute;right: 0;margin-top: 0;">{{item.date}}</p>
+                  <p style="margin-top: 0; margin-bottom: 5px;">Join <span class="hostandtype">{{item.host}}</span> for <span style="font-weight: bold;">{{item.mealtype}}</span>!</p>
+                  <p style='font-weight: normal; margin: 0;'>{{item.description}}</p>
+                  <s-rating value='{{item.rating}}' disabled style="position: absolute; bottom: 0;"></s-rating>
+                </div>
+              </div>
+              </a>
+              </iron-selector>
+            </template>
+          </dom-repeat>
+        </div>
+        <!-- <img src="../images/map.jpg" style="width: 50%; height: 100%;"> -->
+        </div>
+        <page-footer></page-footer>
+      </app-header-layout>
+    </app-drawer-layout>
+    
+  </template>
+    <script>
+  //var provider = new firebase.auth.GoogleAuthProvider();
+ 
+    // Visit https://console.firebase.google.com/project/<your project id>/overview and click on "Add Firebase to your web app"
+    
+    var config = {
+      apiKey: "AIzaSyDdxymRZQOLwyU9yBUdbul9LVeRpTfgaxo",
+      authDomain: "feedme-88e81.firebaseapp.com",
+      databaseURL: "https://feedme-88e81.firebaseio.com",
+      //storageBucket: "<your project id>.appspot.com",
+    };
+    firebase.initializeApp(config);
+  </script>
+  <script>
+    firebase.auth().onAuthStateChanged(function(user) {
+      window.user = user;
+      //The above example keeps window.user in sync with your Firebase Auth user. user will be undefined if the user is not logged in.
+
+      //use firebase.auth().currentUser to obtain user info 
+    });
+  </script>
+  <script>
+    class MealSearchPage extends Polymer.Element {
+      static get is() { return 'meal-search-page'; }
+      static get properties() {
+        return {
+          currentUser: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
+          },
+          selectedUser: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
+          },
+          selectedMeal: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
+          },
+          oldData: Array,
+          isLoggedIn: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            reflectToAttribute: true
+          },
+          isLoggedOut: {
+            type: Boolean,
+            value: true,
+            notify: true,
+            reflectToAttribute: true
+          },
+          mealtypesearch: {
+            type: String,
+            value: ''
+          },
+          datesearch: {
+            type: String,
+            value: ''
+          },
+          meals: {
+            type: Array,
+            notify: true,
+            reflectToAttribute: true,
+            observer: '_mealsChanged'
+          }
+        };
+      }
+
+      test(e){
+        this.selectedMeal = this.data[e.currentTarget.id];
+      }
+
+      gotohomepage(){
+        // this._pageChanged('home-page');
+        this.page = "home-page";
+      }
+      selfUser(){
+        var that = this;
+        var data = firebase.database().ref('users/' + window.user.uid);
+        data.on('value', function(snapshot) {
+          var userinfo = snapshot.val();
+          that.selectedUser = userinfo;
+        });
+      }
+      ready(){
+        super.ready();
+        var that = this;
+        var data = firebase.database().ref('meals');
+        data.on('value', function(snapshot) {
+          var userinfo = snapshot.val();
+          var array = [];
+          for (var i in userinfo){
+            if(userinfo[i] != undefined){
+              array.push(userinfo[i]);
+            }
+          }
+          that.meals = array;
+        });
+
+        this.searchMeals();
+        this.isLoggedOut = true;
+        this.isLoggedIn  = false;
+        var that = this;
+        var p = new Promise(function(resolve, reject) {
+          setTimeout(function() { resolve(10); }, 1000);
+        });
+        p.then(function(result) {
+          if (window.user != null) {
+            that.isLoggedIn = true;
+            that.isLoggedOut = false;
+            var data = firebase.database().ref('users/' + window.user.uid);
+            data.on('value', function(snapshot) {
+              var userinfo = snapshot.val();
+              that.currentUser = userinfo;
+              that.selectedUser = userinfo;
+            });
+          }
+        });
+      }
+
+      login(){
+        login();
+        this.isLoggedOut = false;
+        this.isLoggedIn  = true;
+      }
+
+      logout(){
+        logout();
+        this.isLoggedOut = true;
+        this.isLoggedIn  = false;
+      }
+
+      _mealsChanged(){
+        this.searchMeals();
+      }
+
+      searchMeals(){
+        if (this.oldData == undefined) { 
+          this.oldData = this.meals
+        };
+       // console.log(this.meals)
+        var searchdata = [];
+        var k = 0;
+        if (this.mealtypesearch != '' && this.datesearch != ''){
+          for(var i=0;i<this.meals.length;i++){
+            if((this.meals[i].mealtype == this.mealtypesearch) && this.meals[i].date == this.datesearch){
+              searchdata[k] = this.meals[i];
+              k++;
+            }
+          }
+          
+        } 
+        else if(this.mealtypesearch != ''){
+          for(var i=0;i<this.meals.length;i++){
+            if(this.meals[i].mealtype == this.mealtypesearch){
+              searchdata[k] = this.meals[i];
+              k++;
+            }
+          }
+        } 
+        else if(this.datesearch != ''){
+          for(var i=0;i<this.meals.length;i++){
+            if(this.meals[i].date == this.datesearch){
+              searchdata[k] = this.meals[i];
+              k++;
+            }
+          }
+        } 
+        else {
+          this.data = this.meals;
+          return;
+        }
+        this.data = searchdata;
+      }
+    }
+
+
+    window.customElements.define(MealSearchPage.is, MealSearchPage);
+  </script>
+
+  <!--<script>
+    Polymer({
+      is: 'meal-search-page'
+    });-->
+
+  </script>
+</dom-module>

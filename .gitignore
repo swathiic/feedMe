@@ -1,0 +1,10 @@
+build/
+node_modules/
+<<<<<<< HEAD
+*.log
+Project/firebase-debug.log
+=======
+firebase-debug.log
+*.log
+*.log
+>>>>>>> master
